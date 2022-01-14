@@ -125,7 +125,7 @@ fi
 if [ -z "${KUBE_SERVICES}" ];then
         export KUBE_SERVICES="service deployment"
         if [ "${APP_GROUP}" == "judilibre-prive" ]; then
-		if [ "${KUBE_ZONE}" == "local" -o "${APP_ID}" == "judifiltre-backend" ]; then
+		if [ "${KUBE_ZONE}" == "local" ]; then
                 	export KUBE_SERVICES="mongodb ${KUBE_SERVICES}";
 		fi;
         else
@@ -342,7 +342,7 @@ if [ "${APP_GROUP}" == "monitor" -o "${APP_GROUP}" == "judilibre" ];then
 fi;
 
 ## install mongodb kube cluster controller (in judilibre prive / local mode for CI)
-if [ "${APP_GROUP}" == "judilibre-prive" -a "${KUBE_ZONE}" == "local" -o "${APP_ID}" == "judifiltre-backend" ]; then
+if [ "${APP_GROUP}" == "judilibre-prive" -a "${KUBE_ZONE}" == "local" ]; then
         if (${KUBECTL} get namespace --namespace=${KUBE_NAMESPACE} | grep -v 'No resources' | grep -q 'mongodb' >> ${KUBE_INSTALL_LOG} 2>&1); then
                 echo "✓   mongodb k8s controller";
         else
