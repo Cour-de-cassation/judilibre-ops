@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ${APP_ID}-route
+  namespace: ${KUBE_NAMESPACE}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`${APP_HOST}`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: ${APP_ID}-svc
+          port: 80
+  tls:
+    secretName: ${APP_ID}-cert-${ACME}
