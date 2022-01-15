@@ -141,7 +141,7 @@ if [ "${APP_GROUP}" == "judilibre-prive" ];then
                 if [ -z "${MONGODB_NAME}" ]; then
                         export MONGODB_NAME=admin
                 fi
-                if [ -z "${MONGODB_HOST}" ]; then
+                if [ -z "${MONGODB_URI}" ]; then
                         export MONGODB_URI=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local
                 fi
                 if [ -z "${MONGODB_PORT}" ]; then
