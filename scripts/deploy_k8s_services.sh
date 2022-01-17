@@ -428,45 +428,47 @@ for resource in ${KUBE_SERVICES}; do
                 ./scripts/pre-${resource}.sh
         fi
         if [ "${resource}" == "deployment" ]; then
-                # elastic secrets
-                if (${KUBECTL} get secret --namespace=${KUBE_NAMESPACE} ${APP_ID}-es-path-with-auth >> ${KUBE_INSTALL_LOG} 2>&1); then
-                        echo "✓   secret ${NAMESPACE}/${APP_ID}-es-path-with-auth";
-                else
-                        if [ "${APP_ID}" == "judilibre-admin" ]; then
-                                if (${KUBECTL} create secret --namespace=${KUBE_NAMESPACE} generic ${APP_ID}-es-path-with-auth --from-literal="elastic-node=https://elastic:${ELASTIC_ADMIN_PASSWORD}@${APP_GROUP}-es-http:9200" >> ${KUBE_INSTALL_LOG} 2>&1); then
-                                        echo "🚀  secret ${NAMESPACE}/${APP_ID}-es-path-with-auth";
-                                else
-                                        echo -e "\e[31m❌  secret ${NAMESPACE}/${APP_ID}-es-path-with-auth !\e[0m" && exit 1;
-                                fi;
-                        elif [ "${APP_GROUP}" != "judilibre-prive" ]; then
-                                if (${KUBECTL} create secret --namespace=${KUBE_NAMESPACE} generic ${APP_ID}-es-path-with-auth --from-literal="elastic-node=https://search:${ELASTIC_SEARCH_PASSWORD}@${APP_GROUP}-es-http:9200" >> ${KUBE_INSTALL_LOG} 2>&1);then
-                                        echo "🚀  secret ${NAMESPACE}/${APP_ID}-es-path-with-auth";
-                                else
-                                        echo -e "\e[31m❌  secret ${NAMESPACE}/${APP_ID}-es-path-with-auth !\e[0m" && exit 1;
-                                fi;
-                        else # judilibre-prive
-				if [[ "${APP_ID}" == "judilibre-"* ]]; then
-                                        ./scripts/generate-certificate.sh;
-                                        if (${KUBECTL} get secret --namespace=${NAMESPACE} deployment-cert >> ${KUBE_INSTALL_LOG} 2>&1); then
-                                                echo "✓   secret ${NAMESPACE}/deployment-cert";
+                if [ "${APP_GROUP}" == "judilibre" ]; then
+                        # elastic secrets
+                        if (${KUBECTL} get secret --namespace=${KUBE_NAMESPACE} ${APP_ID}-es-path-with-auth >> ${KUBE_INSTALL_LOG} 2>&1); then
+                                echo "✓   secret ${NAMESPACE}/${APP_ID}-es-path-with-auth";
+                        else
+                                if [ "${APP_ID}" == "judilibre-admin" ]; then
+                                        if (${KUBECTL} create secret --namespace=${KUBE_NAMESPACE} generic ${APP_ID}-es-path-with-auth --from-literal="elastic-node=https://elastic:${ELASTIC_ADMIN_PASSWORD}@${APP_GROUP}-es-http:9200" >> ${KUBE_INSTALL_LOG} 2>&1); then
+                                                echo "🚀  secret ${NAMESPACE}/${APP_ID}-es-path-with-auth";
                                         else
-                                                if (${KUBECTL} create secret --namespace=${NAMESPACE} generic deployment-cert --from-file=server.crt --from-file=server.key >> ${KUBE_INSTALL_LOG} 2>&1); then
-                                                        echo "🚀  secret ${NAMESPACE}/deployment-cert";
-                                                else
-                                                        echo -e "\e[31m❌  secret ${NAMESPACE}/deployment-cert\e[0m" && exit 1;
-                                                fi
+                                                echo -e "\e[31m❌  secret ${NAMESPACE}/${APP_ID}-es-path-with-auth !\e[0m" && exit 1;
                                         fi;
-                                        cp server.crt tls.crt >> ${KUBE_INSTALL_LOG} 2>&1
-                                        if (${KUBECTL} get secret --namespace=${NAMESPACE} deployment-cert >> ${KUBE_INSTALL_LOG} 2>&1); then
-                                                echo "✓   secret ${NAMESPACE}/deployment-cert-public";
+                                else
+                                        if (${KUBECTL} create secret --namespace=${KUBE_NAMESPACE} generic ${APP_ID}-es-path-with-auth --from-literal="elastic-node=https://search:${ELASTIC_SEARCH_PASSWORD}@${APP_GROUP}-es-http:9200" >> ${KUBE_INSTALL_LOG} 2>&1);then
+                                                echo "🚀  secret ${NAMESPACE}/${APP_ID}-es-path-with-auth";
                                         else
-                                                if (${KUBECTL} create secret --namespace=${NAMESPACE} generic deployment-cert-public --from-file=tls.crt >> ${KUBE_INSTALL_LOG} 2>&1); then
-                                                        echo "🚀  secret ${NAMESPACE}/deployment-cert-public";
-                                                else
-                                                        echo -e "\e[31m❌  secret ${NAMESPACE}/deployment-cert-public\e[0m" && exit 1;
-                                                fi
+                                                echo -e "\e[31m❌  secret ${NAMESPACE}/${APP_ID}-es-path-with-auth !\e[0m" && exit 1;
                                         fi;
-				fi;
+                                fi
+                        fi
+                else # judilibre-prive
+                        if [[ "${APP_ID}" == "judilibre-"* ]]; then
+                                ./scripts/generate-certificate.sh;
+                                if (${KUBECTL} get secret --namespace=${NAMESPACE} deployment-cert >> ${KUBE_INSTALL_LOG} 2>&1); then
+                                        echo "✓   secret ${NAMESPACE}/deployment-cert";
+                                else
+                                        if (${KUBECTL} create secret --namespace=${NAMESPACE} generic deployment-cert --from-file=server.crt --from-file=server.key >> ${KUBE_INSTALL_LOG} 2>&1); then
+                                                echo "🚀  secret ${NAMESPACE}/deployment-cert";
+                                        else
+                                                echo -e "\e[31m❌  secret ${NAMESPACE}/deployment-cert\e[0m" && exit 1;
+                                        fi
+                                fi;
+                                cp server.crt tls.crt >> ${KUBE_INSTALL_LOG} 2>&1
+                                if (${KUBECTL} get secret --namespace=${NAMESPACE} deployment-cert >> ${KUBE_INSTALL_LOG} 2>&1); then
+                                        echo "✓   secret ${NAMESPACE}/deployment-cert-public";
+                                else
+                                        if (${KUBECTL} create secret --namespace=${NAMESPACE} generic deployment-cert-public --from-file=tls.crt >> ${KUBE_INSTALL_LOG} 2>&1); then
+                                                echo "🚀  secret ${NAMESPACE}/deployment-cert-public";
+                                        else
+                                                echo -e "\e[31m❌  secret ${NAMESPACE}/deployment-cert-public\e[0m" && exit 1;
+                                        fi
+                                fi;
                         fi;
                 fi;
                 # api secret / password is dummy for search API, only used in admin api
