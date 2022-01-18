@@ -428,7 +428,7 @@ for resource in ${KUBE_SERVICES}; do
                 ./scripts/pre-${resource}.sh
         fi
         if [ "${resource}" == "deployment" ]; then
-                if [ "${APP_GROUP}" == "judilibre" ]; then
+                if [ "${APP_GROUP}" == "judilibre" -o "${APP_GROUP}" == "monitor" ]; then
                         # elastic secrets
                         if (${KUBECTL} get secret --namespace=${KUBE_NAMESPACE} ${APP_ID}-es-path-with-auth >> ${KUBE_INSTALL_LOG} 2>&1); then
                                 echo "✓   secret ${NAMESPACE}/${APP_ID}-es-path-with-auth";
