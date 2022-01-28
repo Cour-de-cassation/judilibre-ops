@@ -2,4 +2,27 @@
 
 ./scripts/check_install.sh > /dev/null
 
-echo $( ( [ -f "package.json" ] && (cat package.json | jq -r '.version') ) || ( [ -f "setup.py" ] && ( grep -r __version__ */__init__.py | sed 's/.*=//;s/"//g;s/\s//g' ) ) || (git tag | tail -1) )-$(export LC_COLLATE=C;export LC_ALL=C;cat tagfiles.version | xargs -I '{}' find {} -type f | egrep -v '(.tar.gz)$' | sort | xargs cat | sha256sum - | sed 's/\(......\).*/\1/')
+if [ -z ${GIT_BRANCH} ];then
+    GIT_BRANCH=$(git branch --show-current)
+fi
+
+if [ -f "package.json" ]; then
+    SEMVER=$(cat package.json | jq -r '.version');
+else
+    if [ -f "setup.py" ]; then
+        if (TMP=$(grep -r __version__ */__init__.py | sed 's/.*=//;s/"//g;s/\s//g') > /dev/null 2>&1); then
+            SEMVER=${TMP}
+        fi
+    fi
+fi;
+if [ -z "${SEMVER}" ]; then
+    SEMVER=$(git tag | tail -1)
+fi
+
+if [ -f .docker-parent ]; then
+    PARENT_VERSION_FILE=.docker-parent-image-file
+    docker manifest inspect $(cat .docker-parent):${GIT_BRANCH} > .docker-parent-image
+    echo .docker-parent-image > .docker-parent-image-file
+fi
+
+echo ${SEMVER}-$(export LC_COLLATE=C;export LC_ALL=C;cat tagfiles.version ${PARENT_VERSION_FILE} | xargs -I '{}' find {} -type f | xargs -I {} sh -c "(git show {} > /dev/null 2>&1) && echo {}" | sort | xargs cat | sha256sum - | sed 's/\(......\).*/\1/')
