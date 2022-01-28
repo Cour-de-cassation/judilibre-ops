@@ -11,6 +11,15 @@ if [ -z "${VERSION}" ];then\
         export VERSION=$(./scripts/version.sh)
 fi
 
+if [ -z ${GIT_BRANCH} ];then
+    GIT_BRANCH=$(git branch --show-current)
+fi
+
+if [ -f .docker-parent ];then
+        docker pull $(cat .docker-parent):${GIT_BRANCH}
+        docker tag $(cat .docker-parent):${GIT_BRANCH} $(cat .docker-parent)
+fi
+
 if [ -z "${APP_ID}" -o -z "${DOCKER_USERNAME}" ]; then
         echo "You must provide all those ENV vars:"
         echo "DOCKER_USERNAME=${DOCKER_USERNAME}"
