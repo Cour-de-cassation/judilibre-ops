@@ -45,10 +45,12 @@ if ! (./scripts/docker-check.sh); then
         (
                 (
                         if (docker build --no-cache --build-arg NPM_LATEST="${NPM_LATEST}" -f ${DOCKER_FILE} --target ${DOCKER_TARGET} -t ${DOCKER_IMAGE} .) ; then
-                                echo -n ""
-                        fi;
+                                echo -n "";
+			fi
                 ) | stdbuf -o0 grep Step | stdbuf -o0 sed 's/ :.*//' | stdbuf -o0 awk '{ printf "\033[2K\r🐋  Docker build version '${VERSION}' " $0 }';
         ) 3>&1 1>&2 2>&3 3>&- | stdbuf -o0 awk '{ if (/non-zero/) { printf "\033[2K\r\033[31m❌  Docker build failed '${VERSION}'\033[0m\n" $0; exit 1} else {print $0}}'
+else
+	(docker pull -q ${DOCKER_IMAGE} > /dev/null 2>&1) && echo -en "\033[2K\r🐋  Docker pulling image ${VERSION}";
 fi;
 if [ $? -eq 0 ]; then
 	echo -e "\033[2K\r🐋  Docker successfully built version ${VERSION}";
