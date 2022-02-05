@@ -147,8 +147,7 @@ if [ "${APP_GROUP}" == "judilibre-prive" ];then
                 if [ -z "${MONGODB_PORT}" ]; then
                         export MONGODB_PORT=27017
                 fi
-        fi
-        if [ "${APP_ID}" == "judifiltre-backend" ]; then
+        elif [ "${APP_ID}" == "judifiltre-backend" ]; then
                 if [ -z "${JURICA_DBNAME}" ]; then
                         export JURICA_DBNAME=jurica
                 fi
@@ -162,13 +161,12 @@ if [ "${APP_GROUP}" == "judilibre-prive" ];then
                         export JURINET_URL=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
                 fi
                 if [ -z "${JUDIFILTRE_DBNAME}" ]; then
-                        export JUDIFILTRE_DBNAME=judifiltredb
+                        export JUDIFILTRE_DBNAME=${APP_ID}
                 fi
                 if [ -z "${JUDIFILTRE_URL}" ]; then
                         export JUDIFILTRE_URL=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
                 fi
-        fi
-        if [ "${APP_ID}" == "judilibre-index" ]; then
+        elif [ "${APP_ID}" == "judilibre-index" ]; then
                 if [ -z "${INTERNAL_DB_URI}" ]; then
                         export INTERNAL_DB_URI=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
                 fi
@@ -176,10 +174,10 @@ if [ "${APP_GROUP}" == "judilibre-prive" ];then
                         export EXTERNAL_DB_URI=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
                 fi
                 if [ -z "${INTERNAL_DB_NAME}" ]; then
-                        export INTERNAL_DB_NAME=internal
+                        export INTERNAL_DB_NAME=${APP_ID}
                 fi
                 if [ -z "${EXTERNAL_DB_NAME}" ]; then
-                        export EXTERNAL_DB_NAME=external
+                        export EXTERNAL_DB_NAME=jurica
                 fi
         elif [ "${APP_ID}" == "judilibre-attachments" ]; then
                 if [ -z "${MONGO_URI}" ]; then
@@ -189,10 +187,10 @@ if [ "${APP_GROUP}" == "judilibre-prive" ];then
                         export MONGO_DECISIONS_URI=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
                 fi
                 if [ -z "${MONGO_DBNAME}" ]; then
-                        export MONGO_DBNAME=internal
+                        export MONGO_DBNAME=${APP_ID}
                 fi
                 if [ -z "${MONGO_DECISIONS_DBNAME}" ]; then
-                        export MONGO_DECISIONS_DBNAME=external
+                        export MONGO_DECISIONS_DBNAME=jurica
                 fi
                 if [ -z "${JWT_SECRET}" ]; then
                         export JWT_SECRET=$(openssl rand -hex 32)
@@ -200,6 +198,16 @@ if [ "${APP_GROUP}" == "judilibre-prive" ];then
                 if [ -z "${COOKIE_SECRET}" ]; then
                         export COOKIE_SECRET=$(openssl rand -hex 32)
                 fi;
+        elif [ "${APP_ID}" == "judilibre-sder" ]; then
+                if [ -z "${MONGO_URI}" ]; then
+                        export MONGO_URI=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
+                fi
+                if [ -z "${MONGO_URI}" ]; then
+                        export MONGO_URI=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
+                fi
+                if [ -z "${MONGO_DBNAME}" ]; then
+                        export MONGO_DBNAME=${APP_ID}
+                fi
         fi;
 fi
 

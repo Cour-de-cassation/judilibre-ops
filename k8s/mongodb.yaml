@@ -1,3 +1,7 @@
+## mongodb conf only used in CI, not in CD (for now)
+## ${APP_ID} will be the name of the internal DB
+## jurica default name of external DB
+## jurinet if secondary needed in CI
 apiVersion: mongodbcommunity.mongodb.com/v1
 kind: MongoDBCommunity
 metadata:
@@ -19,6 +23,12 @@ spec:
       roles:
         - name: dbOwner
           db: admin
+        - name: dbOwner
+          db: jurica
+        - name: dbOwner
+          db: jurinet
+        - name: dbOwner
+          db: ${APP_ID}
       scramCredentialsSecretName: user-scram
   additionalMongodConfig:
     storage.wiredTiger.engineConfig.journalCompressor: zlib
