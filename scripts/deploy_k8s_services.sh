@@ -123,7 +123,11 @@ CERT_ALTER_SPEC
 fi
 
 if [ -z "${KUBE_SERVICES}" ];then
-        export KUBE_SERVICES="service deployment"
+	if [ "${APP_ID}" == "judilibre-sder" -z "${APP_ID}" == "openjustice-sder" ];then
+		export KUBE_SERVICES=deployment
+	else
+:x
+        fi
         if [ "${APP_GROUP}" == "judilibre-prive" ]; then
 		if [ "${KUBE_ZONE}" == "local" ]; then
                 	export KUBE_SERVICES="mongodb ${KUBE_SERVICES}";
