@@ -466,7 +466,7 @@ for resource in ${KUBE_SERVICES}; do
                                 fi
                         fi
                 else # judilibre-prive
-                        if [[ "${APP_ID}" == "judilibre-"* ]]; then
+                        if [ "${APP_ID}" == "judilibre-index" -o "${APP_ID}" == "judilibre-attachments" ]; then
                                 ./scripts/generate-certificate.sh;
                                 if (${KUBECTL} get secret --namespace=${NAMESPACE} deployment-cert >> ${KUBE_INSTALL_LOG} 2>&1); then
                                         echo "✓   secret ${NAMESPACE}/deployment-cert";
