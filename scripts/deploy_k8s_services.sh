@@ -122,21 +122,7 @@ CERT_ALTER_SPEC
 );
 fi
 
-if [ -z "${KUBE_SERVICES}" ];then
-	if [ "${APP_ID}" == "judilibre-sder" -z "${APP_ID}" == "openjustice-sder" ];then
-		export KUBE_SERVICES=deployment
-	else
-:x
-        fi
-        if [ "${APP_GROUP}" == "judilibre-prive" ]; then
-		if [ "${KUBE_ZONE}" == "local" ]; then
-                	export KUBE_SERVICES="mongodb ${KUBE_SERVICES}";
-		fi;
-        else
-                export KUBE_SERVICES="elasticsearch-roles elasticsearch-users elasticsearch ${KUBE_SERVICES}";
-        fi;
-fi
-
+## Env default var initialize (for CI or local)
 if [ "${APP_GROUP}" == "judilibre-prive" ];then
         if [ -z "${MONGODB_PASSWORD}" ]; then
                 export MONGODB_PASSWORD=$(openssl rand -hex 32)
@@ -218,6 +204,22 @@ if [ "${APP_GROUP}" == "judilibre-prive" ];then
         fi;
 fi
 
+# KUBE_SERVICES init
+if [ -z "${KUBE_SERVICES}" ];then
+	if [ "${APP_ID}" == "judilibre-sder" -o "${APP_ID}" == "openjustice-sder" ];then
+		export KUBE_SERVICES=deployment
+        else
+                export KUBE_SERVICES="service deployment"
+        fi;
+        if [ "${APP_GROUP}" == "judilibre-prive" ]; then
+                echo ba kube-svc: ${KUBE_SERVICES}
+		if [ "${KUBE_ZONE}" == "local" ]; then
+                        export KUBE_SERVICES="mongodb ${KUBE_SERVICES}";
+		fi;
+        else
+                export KUBE_SERVICES="elasticsearch-roles elasticsearch-users elasticsearch ${KUBE_SERVICES}";
+        fi;
+fi
 
 if [ "${KUBE_ZONE}" == "local" ]; then
         #register host if not already done
@@ -226,7 +228,9 @@ if [ "${KUBE_ZONE}" == "local" ]; then
         fi;
         #assume local kube conf (minikube or k3s)
         if [ "${APP_GROUP}" == "judilibre-prive" ];then
-                if [[ "${APP_ID}" == "judilibre-"* ]]; then
+                if [ "${APP_ID}" == "judilibre-sder" -o "${APP_ID}" == "openjustice-sder" ]; then
+                        export KUBE_SERVICES="${KUBE_SERVICES}";
+                elif [ "${APP_ID}" == "judilibre-"* ]; then
                         export KUBE_SERVICES="${KUBE_SERVICES} ingress-local-secure";
                 else
                         export KUBE_SERVICES="${KUBE_SERVICES} ingress-local";
