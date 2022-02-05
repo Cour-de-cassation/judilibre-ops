@@ -208,6 +208,9 @@ if [ "${APP_GROUP}" == "judilibre-prive" ];then
                 if [ -z "${MONGO_DBNAME}" ]; then
                         export MONGO_DBNAME=${APP_ID}
                 fi
+                if [ -z "${https_proxy}" ]; then
+			export https_proxy=""
+		fi
         fi;
 fi
 
