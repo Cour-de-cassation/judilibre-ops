@@ -271,7 +271,10 @@ if [ "${KUBE_ZONE}" == "local" ]; then
         fi
 else
         if [ "${KUBE_TYPE}" == "k3s" ];then
-                if [[ ${APP_ID} == "judilibre-"* ]]; then
+                if [ "${APP_ID}" == "judilibre-sder" -o "$APP_ID" == "openjustice-sder" ]; then
+                        # no API exposition for those services
+			export KUBE_SERVICES="${KUBE_SERVICES}";
+                elif [[ ${APP_ID} == "judilibre-"* ]]; then
                         export KUBE_SERVICES="${KUBE_SERVICES} ingress-local-secure";
                 else
                         export KUBE_SERVICES="${KUBE_SERVICES} ingress-local";
