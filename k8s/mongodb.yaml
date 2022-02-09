@@ -28,7 +28,7 @@ spec:
         - name: dbOwner
           db: jurinet
         - name: dbOwner
-          db: ${APP_ID}
+          db: ${APP_DB_NAME}
       scramCredentialsSecretName: user-scram
   additionalMongodConfig:
     storage.wiredTiger.engineConfig.journalCompressor: zlib

@@ -127,6 +127,9 @@ if [ "${APP_GROUP}" == "judilibre-prive" ];then
         if [ -z "${MONGODB_PASSWORD}" ]; then
                 export MONGODB_PASSWORD=$(openssl rand -hex 32)
         fi
+	if [ -z "${APP_DB_NAME}" ]; then
+		export APP_DB_NAME=${APP_ID}
+	fi
         if [ "${APP_ID}" == "label-backend" ]; then
                 if [ -z "${MONGODB_NAME}" ]; then
                         export MONGODB_NAME=admin
@@ -150,8 +153,9 @@ if [ "${APP_GROUP}" == "judilibre-prive" ];then
                 if [ -z "${JURINET_URL}" ]; then
                         export JURINET_URL=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
                 fi
+		export APP_DB_NAME=judifiltredb
                 if [ -z "${JUDIFILTRE_DBNAME}" ]; then
-                        export JUDIFILTRE_DBNAME=${APP_ID}
+                        export JUDIFILTRE_DBNAME=${APP_DB_NAME}
                 fi
                 if [ -z "${JUDIFILTRE_URL}" ]; then
                         export JUDIFILTRE_URL=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
@@ -212,7 +216,6 @@ if [ -z "${KUBE_SERVICES}" ];then
                 export KUBE_SERVICES="service deployment"
         fi;
         if [ "${APP_GROUP}" == "judilibre-prive" ]; then
-                echo ba kube-svc: ${KUBE_SERVICES}
 		if [ "${KUBE_ZONE}" == "local" ]; then
                         export KUBE_SERVICES="mongodb ${KUBE_SERVICES}";
 		fi;
