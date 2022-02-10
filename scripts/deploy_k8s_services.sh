@@ -193,14 +193,18 @@ if [ "${APP_GROUP}" == "judilibre-prive" ];then
                         export COOKIE_SECRET=$(openssl rand -hex 32)
                 fi;
         elif [ "${APP_ID}" == "judilibre-sder" ]; then
-                if [ -z "${MONGO_URI}" ]; then
-                        export MONGO_URI=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
-                fi
+                APP_DB_NAME=judilibre-attachments
                 if [ -z "${MONGO_URI}" ]; then
                         export MONGO_URI=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
                 fi
                 if [ -z "${MONGO_DBNAME}" ]; then
-                        export MONGO_DBNAME=${APP_ID}
+                        export MONGO_DBNAME=jurinet
+                fi
+                if [ -z "${MONGO_ATTACHMENTS_URI}" ]; then
+                        export MONGO_ATTACHMENTS_URI=mongodb://user:${MONGODB_PASSWORD}@mongodb-0.mongodb-svc.${KUBE_NAMESPACE}.svc.cluster.local:27017
+                fi
+                if [ -z "${MONGO_ATTACHMENTS_DBNAME}" ]; then
+                        export MONGO_ATTACHMENTS_DBNAME=${APP_DB_NAME}
                 fi
                 if [ -z "${https_proxy}" ]; then
 			export https_proxy=""
