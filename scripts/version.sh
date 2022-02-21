@@ -10,8 +10,14 @@ if [ -f "package.json" ]; then
     SEMVER=$(cat package.json | jq -r '.version');
 else
     if [ -f "setup.py" ]; then
-        if (TMP=$(grep -r __version__ */__init__.py | sed 's/.*=//;s/"//g;s/\s//g') > /dev/null 2>&1); then
+        TMP=$(grep -r __version__ */__init__.py | sed 's/.*=//;s/"//g;s/\s//g') > /dev/null 2>&1
+        if [ ! -z "${TMP}" ]; then
             SEMVER=${TMP}
+        else
+	  TMP=$(cat setup.py | grep version | sed 's/.*version="\(.*\)\".*/\1/' | grep -v version) > /dev/null 2>&1;
+          if [ ! -z "${TMP}" ];then
+            SEMVER=${TMP}
+          fi
         fi
     fi
 fi;
