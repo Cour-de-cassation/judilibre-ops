@@ -6,6 +6,6 @@
     curl -s https://updown.io/api/nodes/ipv4 | jq -r '.[]' | tr '\n' ',' #updown.io
     echo 185.24.185.46/27 #piste
     echo 185.24.186.214 #mj
-    echo 78.192.252.15,163.172.185.238,163.172.130.121 #fa
+    echo 78.192.252.15,91.170.21.111 #devops
     echo 80.87.224.0/22 #actimage
 ) | tr '\n' ',' | sed 's/,$//'
