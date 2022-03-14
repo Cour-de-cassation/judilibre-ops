@@ -682,6 +682,7 @@ if [ "${APP_GROUP}" == "judilibre" ];then
                         echo -e "\e[31m❌  elasticsearch default index !\e[0m" && exit 1;
                 fi;
         else
-                echo "✓   elasticsearch default index";
+                echo "✓   elasticsearch default index"
         fi;
 fi;
+echo "✅  successfully deployed ${APP_GROUP}/${APP_ID} on ${APP_HOST} / ${KUBE_NAMESPACE}" && exit 0;
