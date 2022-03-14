@@ -19,7 +19,7 @@ ENV_NUMBER=0
 for TARGET in ${ENV_FILES};do
     ((ENV_NUMBER++))
     unset APP_RESERVED_IP APP_RESERVED_IP_SEARCH
-    export $(cat ${TARGET} | sed 's/#.*//g' | xargs)
+    set -a; source "${TARGET}" ; set +a;
     (cd judilibre-search && git checkout ${GIT_BRANCH} >> ${KUBE_INSTALL_LOG} 2>&1)
     ##############################
     # step 1. reserve IPs of LB and update DNS
