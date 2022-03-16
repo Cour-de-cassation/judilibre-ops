@@ -27,10 +27,16 @@ else
 fi
 
 #test or rollback
-if ( ( ./scripts/wait_services_readiness.sh && ./scripts/test_minimal.sh ) >> ${KUBE_INSTALL_LOG} 2>&1); then  
-        echo "✅  ${APP_ID}:${VERSION} upgrade";
+if ( ( ./scripts/wait_services_readiness.sh && ./scripts/test_minimal.sh ) > ${KUBE_INSTALL_LOG}.tmp 2>&1); then  
+        cat ${KUBE_INSTALL_LOG}.tmp >> ${KUBE_INSTALL_LOG}
+	rm ${KUBE_INSTALL_LOG}.tmp
+	echo "✅  ${APP_ID}:${VERSION} upgrade";
 else
-        echo -e "\e[31m❌  ${APP_ID}:${VERSION} upgrade failed\e[0m";
+        cat ${KUBE_INSTALL_LOG}.tmp >> ${KUBE_INSTALL_LOG}
+	echo -e "\e[31m❌  ${APP_ID}:${VERSION} upgrade failed\e[0m";
+        cat ${KUBE_INSTALL_LOG}.tmp | awk 'BEGIN{print "    Error in test_minimal:"}{print "    " $0}'
+        rm ${KUBE_INSTALL_LOG}.tmp
+        kubectl -n ${KUBE_NAMESPACE} logs deployments/${APP_ID}-deployment | awk 'BEGIN{print "    Logs of kube deployment:"}{print "    " $0}'
         if (kubectl -n ${KUBE_NAMESPACE} rollout undo deployments/${APP_ID}-deployment >> ${KUBE_INSTALL_LOG} 2>&1); then
                 echo "✅  ${APP_ID} rollback successfull";
                 exit 1;
