@@ -26,7 +26,7 @@ done;
 
 : ${SCW_REGION:="fr-par"}
 # export RCLONE_CONFIG_S3_TYPE=s3
-# export RCLONE_CONFIG_S3_ACCESS_KEY_ID=$(export $(cat ${ENV_FILE_SRC} | sed 's/#.*//g' | xargs);echo $SCW_DATA_ACCESS_KEY)
+# export RCLONE_CONFIG_S3_ACCESS_KEY_ID=$(export $(cat ${ENV_FILE_SRC} | sed 's/#.*//g' | envsubst | xargs);echo $SCW_DATA_ACCESS_KEY)
 # export RCLONE_CONFIG_S3_SECRET_ACCESS_KEY=$(export $(cat ${ENV_FILE_SRC} | sed 's/#.*//g' | xargs);echo $SCW_DATA_SECRET_KEY)
 # export RCLONE_CONFIG_S3_ENV_AUTH=false
 # export RCLONE_CONFIG_S3_ENDPOINT=s3.${SCW_REGION}.scw.cloud
