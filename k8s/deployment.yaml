@@ -26,6 +26,8 @@ spec:
                 key: elastic-node
           - name: ELASTIC_INDEX
             value: ${ELASTIC_INDEX}
+          - name: ELASTIC_CERT
+            value: /etc/elasticsearch/certificates/ca.crt
           - name: HTTP_PASSWD
             valueFrom:
               secretKeyRef:
@@ -49,3 +51,11 @@ spec:
               - all
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
+        volumeMounts:
+          - name: cert-ca
+            mountPath: /etc/elasticsearch/certificates
+            readOnly: true
+      volumes:
+      - name: cert-ca
+        secret:
+          secretName: monitor-es-http-certs-public
