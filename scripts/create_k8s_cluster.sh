@@ -34,23 +34,13 @@ fi;
 : ${SCW_ZONE:="fr-par-1"}
 : ${SCW_SERVER_API:="https://api.scaleway.com/instance/v1/zones/${SCW_ZONE}/servers"}
 : ${SCW_SECURITYGROUP_API:="https://api.scaleway.com/instance/v1/zones/${SCW_ZONE}/security_groups"}
-: ${KUBE_INGRESS:='nginx'}
 
-if [ "${APP_GROUP}" == "monitor" ];then
-    export SCW_KUBE_CLUSTERCONFIG="{'project_id':'${SCW_KUBE_PROJECT_ID}', 'name':'${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}',
-                            'cni': '${SCW_CNI}', 'version':'${SCW_KUBE_VERSION}',
-                            'auto_upgrade':{'enable':true,'maintenance_window':{'start_hour':2, 'day':'any'}},
-                            'pools':[{'name':'default','node_type':'${SCW_FLAVOR}',
-                                    'autoscaling':true,'size':${SCW_KUBE_NODES},'autohealing':true,'zone':'${SCW_ZONE}'}]
-                            }"
-else
-    export SCW_KUBE_CLUSTERCONFIG="{'project_id':'${SCW_KUBE_PROJECT_ID}', 'name':'${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}',
-                            'ingress':'${KUBE_INGRESS}', 'cni': '${SCW_CNI}', 'version':'${SCW_KUBE_VERSION}',
-                            'auto_upgrade':{'enable':true,'maintenance_window':{'start_hour':2, 'day':'any'}},
-                            'pools':[{'name':'default','node_type':'${SCW_FLAVOR}',
-                                    'autoscaling':true,'size':${SCW_KUBE_NODES},'autohealing':true,'zone':'${SCW_ZONE}'}]
-                            }"
-fi;
+export SCW_KUBE_CLUSTERCONFIG="{'project_id':'${SCW_KUBE_PROJECT_ID}', 'name':'${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}',
+                        'cni': '${SCW_CNI}', 'version':'${SCW_KUBE_VERSION}',
+                        'auto_upgrade':{'enable':true,'maintenance_window':{'start_hour':2, 'day':'any'}},
+                        'pools':[{'name':'default','node_type':'${SCW_FLAVOR}',
+                                'autoscaling':true,'size':${SCW_KUBE_NODES},'autohealing':true,'zone':'${SCW_ZONE}'}]
+                        }"
 
 export SCW_KUBE_CLUSTERCONFIG=$(echo $SCW_KUBE_CLUSTERCONFIG | tr "'" '"' | jq -c '.')
 

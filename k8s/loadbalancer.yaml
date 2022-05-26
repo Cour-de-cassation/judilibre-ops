@@ -2,8 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ${APP_ID}-loadbalancer
-  namespace: kube-system
+  namespace: ${KUBE_INGRESS_NAMESPACE}
   labels:
+    k8s.scw.cloud/ingress: nginx
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
   annotations:
@@ -23,22 +24,6 @@ spec:
   selector:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
----
-# use proxy-protocol
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ingress-nginx-configuration
-  namespace: kube-system
-  labels:
-    app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/part-of: ingress-nginx
-data:
-  use-proxy-protocol: "true"
-  no-tls-redirect-locations: "/.well-known/acme-challenge"
-  #enable-opentracing: "true"
-  #enable-modsecurity: "true"
-  #enable-owasp-core-rules: "true"
 ---
 # workaround https://github.com/compumike/hairpin-proxy
 # for bug https://github.com/jetstack/cert-manager/issues/466 in http01 solver
@@ -79,7 +64,7 @@ spec:
               cpu: "50m"
           env:
             - name: TARGET_SERVER
-              value: ${APP_ID}-loadbalancer.kube-system.svc.cluster.local
+              value: ${APP_ID}-loadbalancer.${KUBE_INGRESS_NAMESPACE}.svc.cluster.local
 
 ---
 

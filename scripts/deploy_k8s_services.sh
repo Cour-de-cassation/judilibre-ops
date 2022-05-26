@@ -301,12 +301,28 @@ else
                 if [ -z "${KUBE_INGRESS}" ]; then
                         export KUBE_INGRESS=nginx
                 fi;
+                if [ -z "${KUBE_INGRESS_NAMESPACE}" ]; then
+                        export KUBE_INGRESS_NAMESPACE=kube-system
+                fi;
                 if [ "${KUBE_INGRESS}" == "nginx" ]; then
+                        if ( (${KUBECTL} get -n kube-system daemonsets nginx-ingress | grep -q nginx-ingress ) > ${KUBE_INSTALL_LOG} 2>&1); then
+                                echo "✓   ${KUBE_INGRESS} controller";
+                        else
+                                if (
+                                        (cat k8s/ingress-nginx-controller.yaml | ${KUBECTL} apply -f - \
+                                        ) > ${KUBE_INSTALL_LOG} 2>&1
+                                        ); then
+                                        echo "🚀  ${KUBE_INGRESS} controller";
+                                else
+                                        echo -e "\e[31m❌  ${KUBE_INGRESS} controller\e[0m" && exit 1;
+                                fi;
+                        fi;
+                        export KUBE_CONF_LB=loadbalancer;
                         export KUBE_SOLVER=nginx;
                         export KUBE_CONF_ROUTE=ingress;
-                        export KUBE_CONF_LB=loadbalancer;
                 else
                         export KUBE_INGRESS=traefik;
+                        export KUBE_INGRESS_NAMESPACE=kube-system
                         export KUBE_SOLVER=traefik-cert-manager;
                         export KUBE_CONF_ROUTE=ingressroute;
                         export KUBE_CONF_LB=loadbalancer-traefik;
@@ -558,15 +574,15 @@ for resource in ${KUBE_SERVICES}; do
                 if [ "${KUBE_TYPE}" != "openshift" ]; then
                         fails=0
                         until [ "$timeout" -le 0 -o ! -z "$ok" ] ; do
-                                lb=$(${KUBECTL} get service --namespace=kube-system | grep -i loadbalancer | grep -v pending | egrep "${APP_ID}|traefik" | awk '{print $1}');
+                                lb=$(${KUBECTL} get service --namespace=${KUBE_INGRESS_NAMESPACE} | grep -i loadbalancer | grep -v pending | egrep "${APP_ID}|traefik" | awk '{print $1}');
                                 if [ ! -z "$lb" ]; then
-                                        ret=$(${KUBECTL} describe service/${lb} --namespace=kube-system | grep Endpoints | awk 'BEGIN{s=0}($2){s++}END{printf s}');
+                                        ret=$(${KUBECTL} describe service/${lb} --namespace=${KUBE_INGRESS_NAMESPACE} | grep Endpoints | awk 'BEGIN{s=0}($2){s++}END{printf s}');
                                 fi;
                                 if [ "$ret" -eq "0" ] ; then
                                         printf "\r\033[2K%03d Wait for Loadbalancer to be ready" $timeout;
                                 else
                                         if [ ! -z "${SCW_DNS_SECRET_TOKEN}" -a -z "${APP_RESERVED_IP}" -a -z "${SCW_DNS_UPDATE_IP}" ];then
-                                                export SCW_DNS_UPDATE_IP=$(${KUBECTL} get service --namespace=kube-system | grep -i loadbalancer | grep -v pending | egrep "${APP_ID}|traefik" | awk '{print $4}');
+                                                export SCW_DNS_UPDATE_IP=$(${KUBECTL} get service --namespace=${KUBE_INGRESS_NAMESPACE} | grep -i loadbalancer | grep -v pending | egrep "${APP_ID}|traefik" | awk '{print $4}');
                                                 if [ -z "${SCW_DNS_UPDATE_IP}" ];then
                                                         echo -e "\r\033[2K\e[31m❌  loadblancer failed to get public IP" && exit 1;
                                                 fi
@@ -588,7 +604,7 @@ for resource in ${KUBE_SERVICES}; do
                                 ((timeout--)); sleep 1 ;
                         done ;
                         if [ -z "$ok" ];then
-                                echo -en "\r\033[2K\e[31m❌  loadbalancer is not ready !\e[0m\n" && (${KUBECTL} get service --namespace=kube-system | grep -i loadbalancer) && exit 1
+                                echo -en "\r\033[2K\e[31m❌  loadbalancer is not ready !\e[0m\n" && (${KUBECTL} get service --namespace=${KUBE_INGRESS_NAMESPACE} | grep -i loadbalancer) && exit 1
                         else
                                 (echo -en "\r\033[2K✓   loadbalancer is ready\n")
                         fi;
