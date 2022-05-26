@@ -58,4 +58,4 @@ spec:
       volumes:
       - name: cert-ca
         secret:
-          secretName: monitor-es-http-certs-public
+          secretName: ${APP_GROUP}-es-http-certs-public
