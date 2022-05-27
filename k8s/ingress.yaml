@@ -11,8 +11,8 @@ metadata:
       location @forbidden {
         return 301 https://www.courdecassation.fr;
       }
+    kubernetes.io/ingress.class: "nginx"
 spec:
-  ingressClassName: nginx
   tls:
   - hosts:
     - ${APP_HOST}
