@@ -34,6 +34,7 @@ if [ "$ret" -ne "0" ]; then
           if [ "$status" == "CrashLoopBackOff" ]
             logs = $(${KUBECTL} get logs ${POD} --namespace=${KUBE_NAMESPACE});
             printf "\r\033[2K\e[31m❌ Error ${POD} \n$logs\n";
+          fi
         done;
         exit 1;
 else
