@@ -30,9 +30,10 @@ if [ "$ret" -ne "0" ]; then
         echo -en "\r\033[2K\e[31m❌  all pods are not ready !\e[0m\n";
         ${KUBECTL} get pod --namespace=${KUBE_NAMESPACE};
         for POD in ${POD_ONE} ${POD_TWO}; do
+          pod = $(${KUBECTL} get pod --namespace=${KUBE_NAMESPACE} | grep ${POD} | awk '{print $1}');
           status=$(${KUBECTL} get pod --namespace=${KUBE_NAMESPACE} | grep ${POD} | awk '{print $3}');
           if [ "$status" == "CrashLoopBackOff" ]; then
-            $(${KUBECTL} logs ${POD} --namespace=${KUBE_NAMESPACE});
+            $(${KUBECTL} logs $pod --namespace=${KUBE_NAMESPACE});
           fi;
         done;
         exit 1;
