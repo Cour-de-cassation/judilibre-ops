@@ -33,9 +33,6 @@ if [ "$ret" -ne "0" ]; then
           status=$(${KUBECTL} get pod --namespace=${KUBE_NAMESPACE} | grep ${POD} | awk '{print $3}');
           if [ "$status" == "CrashLoopBackOff" ]; then
             pod_logs = $(${KUBECTL} get logs ${POD} --namespace=${KUBE_NAMESPACE});
-            if [ "$pod_logs" -ne "0" ]; then
-              printf "\r\033[2K\e[31m❌ Error ${POD} \n $pod_logs \n";
-            fi
           fi;
         done;
         exit 1;
