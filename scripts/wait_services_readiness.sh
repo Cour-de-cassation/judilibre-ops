@@ -32,7 +32,7 @@ if [ "$ret" -ne "0" ]; then
         for POD in ${POD_ONE} ${POD_TWO}; do
           status=$(${KUBECTL} get pod --namespace=${KUBE_NAMESPACE} | grep ${POD} | awk '{print $3}');
           if [ "$status" == "CrashLoopBackOff" ]; then
-            pod_logs = $(${KUBECTL} get logs ${POD} --namespace=${KUBE_NAMESPACE});
+            $(${KUBECTL} get logs ${POD} --namespace=${KUBE_NAMESPACE});
           fi;
         done;
         exit 1;
