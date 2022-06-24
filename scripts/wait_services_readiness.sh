@@ -33,7 +33,7 @@ if [ "$ret" -ne "0" ]; then
           pod = $(${KUBECTL} get pod --namespace=${KUBE_NAMESPACE} | grep ${POD} | awk '{print $1}');
           status=$(${KUBECTL} get pod --namespace=${KUBE_NAMESPACE} | grep ${POD} | awk '{print $3}');
           if [ "$status" == "CrashLoopBackOff" ]; then
-            $(${KUBECTL} logs (echo $pod ) --namespace=${KUBE_NAMESPACE});
+            $(${KUBECTL} logs '$pod' --namespace=${KUBE_NAMESPACE});
           fi;
         done;
         exit 1;
