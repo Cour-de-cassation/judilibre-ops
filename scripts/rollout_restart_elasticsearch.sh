@@ -17,7 +17,7 @@ if [ -z "${KUBE_NAMESPACE}" ]; then
         export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-$(echo ${GIT_BRANCH} | tr '/' '-')
 fi;
 
-for (( i=1 ; ((i-${ELASTIC_NODES})) ; i=(($i+1)) ));
+for (( i=0 ; ((i-${ELASTIC_NODES})) ; i=(($i+1)) ));
         do ${KUBECTL} -n ${KUBE_NAMESPACE} delete pod/${APP_GROUP}-es-default-${i};
         ./scripts/wait_services_readiness.sh;
 done;
