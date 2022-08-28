@@ -37,9 +37,9 @@ done;
 # export RCLONE_CONFIG_S3_STORAGE_CLASS=
 # export RCLONE_CONFIG_S3_ACL=private
 
-S3_SRC=$(export $(cat ${ENV_FILE_SRC} | sed 's/#.*//g' | xargs); echo ${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE})
+S3_SRC=$(export $(cat ${ENV_FILE_SRC} | sed 's/#.*//g' | xargs); echo ${KUBE_NAMESPACE})
 for ENV_DST in ${ENV_FILES_DST};do
-    S3_DST=$(export $(cat ${ENV_DST} | sed 's/#.*//g' | xargs); echo ${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE});
+    S3_DST=$(export $(cat ${ENV_DST} | sed 's/#.*//g' | xargs); echo ${KUBE_NAMESPACE});
     # echo -n "➡️   s3 copy ${S3_SRC} to ${S3_DST}";
     # (rclone sync s3://${S3_SRC} s3://${S3_DST} >> ${KUBE_INSTALL_LOG} 2>&1) && echo "\r\033[2K✓   s3 copy ${S3_SRC} to ${S3_DST}" || echo -e "\r\e[31m❌  s3 copy ${S3_SRC} to ${S3_DST}";
     (
