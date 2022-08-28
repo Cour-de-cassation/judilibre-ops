@@ -649,10 +649,10 @@ if [ ! -z "${SCW_DATA_SECRET_KEY}" ];then
         export RCLONE_CONFIG_S3_LOCATION_CONSTRAINT=
         export RCLONE_CONFIG_S3_STORAGE_CLASS=
         export RCLONE_CONFIG_S3_ACL=private
-        if (rclone -q ls s3:${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE} >> ${KUBE_INSTALL_LOG} 2>&1);then
+        if (rclone -q ls s3:${KUBE_NAMESPACE} >> ${KUBE_INSTALL_LOG} 2>&1);then
                 echo "✓   elasticsearch s3 backup bucket";
         else
-                if (rclone -q mkdir s3:${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE} >> ${KUBE_INSTALL_LOG} 2>&1);then
+                if (rclone -q mkdir s3:${KUBE_NAMESPACE} >> ${KUBE_INSTALL_LOG} 2>&1);then
                         echo "🚀  elasticsearch s3 backup bucket";
                 else
                         echo -e "\e[31m❌  elasticsearch s3 backup bucket !\e[0m" && exit 1;
@@ -661,26 +661,26 @@ if [ ! -z "${SCW_DATA_SECRET_KEY}" ];then
         ELASTIC_REPOSITORY="{
                 'type': 's3',
                 'settings': {
-                        'bucket': '${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE}',
+                        'bucket': '${KUBE_NAMESPACE}',
                         'region': '${SCW_REGION}',
                         'endpoint': 's3.${SCW_REGION}.scw.cloud'
                 }
         }"
         ELASTIC_REPOSITORY=$(echo ${ELASTIC_REPOSITORY} | tr "'" '"' | jq -c '.')
 
-        if ! (${KUBECTL} exec --namespace=${KUBE_NAMESPACE} ${APP_GROUP}-es-default-0 -- curl -s --fail -k "${ELASTIC_NODE}/_snapshot/${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE}" >> ${KUBE_INSTALL_LOG} 2>&1); then
-                if (${KUBECTL} exec --namespace=${KUBE_NAMESPACE} ${APP_GROUP}-es-default-0 -- curl -s -k -XPUT "${ELASTIC_NODE}/_snapshot/${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE}" -H 'Content-Type: application/json' -d "${ELASTIC_REPOSITORY}" >> ${KUBE_INSTALL_LOG} 2>&1); then
+        if ! (${KUBECTL} exec --namespace=${KUBE_NAMESPACE} ${APP_GROUP}-es-default-0 -- curl -s --fail -k "${ELASTIC_NODE}/_snapshot/${KUBE_NAMESPACE}" >> ${KUBE_INSTALL_LOG} 2>&1); then
+                if (${KUBECTL} exec --namespace=${KUBE_NAMESPACE} ${APP_GROUP}-es-default-0 -- curl -s -k -XPUT "${ELASTIC_NODE}/_snapshot/${KUBE_NAMESPACE}" -H 'Content-Type: application/json' -d "${ELASTIC_REPOSITORY}" >> ${KUBE_INSTALL_LOG} 2>&1); then
                         echo "🚀  elasticsearch set backup repository";
-                        ELASTIC_SNAPSHOT=$(${KUBECTL} exec --namespace=${KUBE_NAMESPACE} ${APP_GROUP}-es-default-0 -- curl -s --fail -k "${ELASTIC_NODE}/_cat/snapshots/${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE}" 2>&1 | grep SUCCESS | tail -1 | awk '{print $1}')
+                        ELASTIC_SNAPSHOT=$(${KUBECTL} exec --namespace=${KUBE_NAMESPACE} ${APP_GROUP}-es-default-0 -- curl -s --fail -k "${ELASTIC_NODE}/_cat/snapshots/${KUBE_NAMESPACE}" 2>&1 | grep SUCCESS | tail -1 | awk '{print $1}')
                         if [ ! -z "${ELASTIC_SNAPSHOT}" ];then
-                                if (${KUBECTL} exec --namespace=${KUBE_NAMESPACE} ${APP_GROUP}-es-default-0 -- curl -s --fail -k -XPOST "${ELASTIC_NODE}/_snapshot/${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE}/${ELASTIC_SNAPSHOT}/_restore" -H 'Content-Type: application/json' -d '{"indices":"'${ELASTIC_INDEX}'"}' >> ${KUBE_INSTALL_LOG} 2>&1);then
+                                if (${KUBECTL} exec --namespace=${KUBE_NAMESPACE} ${APP_GROUP}-es-default-0 -- curl -s --fail -k -XPOST "${ELASTIC_NODE}/_snapshot/${KUBE_NAMESPACE}/${ELASTIC_SNAPSHOT}/_restore" -H 'Content-Type: application/json' -d '{"indices":"'${ELASTIC_INDEX}'"}' >> ${KUBE_INSTALL_LOG} 2>&1);then
                                         echo "🔄  elasticsearch backup ${ELASTIC_SNAPSHOT} restored";
                                 else
                                         echo -e "\e[33m⚠️   elasticsearch backup ${ELASTIC_SNAPSHOT} not restored\e[0m";
                                 fi;
                         else
                                 ${KUBECTL} --namespace=${KUBE_NAMESPACE} get all
-                                ${KUBECTL} exec --namespace=${KUBE_NAMESPACE} ${APP_GROUP}-es-default-0 -- curl -s --fail -k "${ELASTIC_NODE}/_cat/snapshots/${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE}"
+                                ${KUBECTL} exec --namespace=${KUBE_NAMESPACE} ${APP_GROUP}-es-default-0 -- curl -s --fail -k "${ELASTIC_NODE}/_cat/snapshots/${KUBE_NAMESPACE}"
                                 echo -e "\e[33m⚠️   found no elasticsearch backup to restore\e[0m";
                         fi;
                 else

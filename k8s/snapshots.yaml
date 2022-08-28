@@ -27,7 +27,7 @@ spec:
             - /bin/sh
             args:
             - -c
-            - 'curl -s -i -k -XPUT "https://elastic:$(cat /tmp/es-basic-auth/elastic)@${APP_GROUP}-es-http:9200/_snapshot/${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE}/snapshot-$(date +%Y.%m.%d-%H.%M)" | tee /dev/stderr | grep "200 OK" && curl -s -i -k "https://elastic:$(cat /tmp/es-basic-auth/elastic)@${APP_GROUP}-es-http:9200/_cat/snapshots/${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE}" | sed "s/ .*//" | egrep -v "^snapshot-($(date +%Y.%m.%d-[0-9]*.00)|$(date +%Y.%m.%d-%H.*)|[0-9]*.[0-9]*.[0-9]*|[0-9]*.[0-9]*.[0-9]*-00.00)$" | xargs -I{} curl -s -i -k -X DELETE "https://elastic:$(cat /tmp/es-basic-auth/elastic)@${APP_GROUP}-es-http:9200/_snapshot/${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE}-${KUBE_NAMESPACE}/{}"'
+            - 'curl -s -i -k -XPUT "https://elastic:$(cat /tmp/es-basic-auth/elastic)@${APP_GROUP}-es-http:9200/_snapshot/${KUBE_NAMESPACE}/snapshot-$(date +%Y.%m.%d-%H.%M)" | tee /dev/stderr | grep "200 OK" && curl -s -i -k "https://elastic:$(cat /tmp/es-basic-auth/elastic)@${APP_GROUP}-es-http:9200/_cat/snapshots/${KUBE_NAMESPACE}" | sed "s/ .*//" | egrep -v "^snapshot-($(date +%Y.%m.%d-[0-9]*.00)|$(date +%Y.%m.%d-%H.*)|[0-9]*.[0-9]*.[0-9]*|[0-9]*.[0-9]*.[0-9]*-00.00)$" | xargs -I{} curl -s -i -k -X DELETE "https://elastic:$(cat /tmp/es-basic-auth/elastic)@${APP_GROUP}-es-http:9200/_snapshot/${KUBE_NAMESPACE}/{}"'
           restartPolicy: Never
           volumes:
           - name: es-basic-auth
