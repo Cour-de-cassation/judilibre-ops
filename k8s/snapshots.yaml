@@ -6,7 +6,7 @@ metadata:
   name: elasticsearch-snapshotter
   namespace: ${KUBE_NAMESPACE}
 spec:
-  schedule: "0/5 * * * *"
+  schedule: "0/30 * * * *"
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
