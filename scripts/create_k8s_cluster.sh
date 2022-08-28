@@ -20,8 +20,8 @@ fi;
 [ -z "${SCW_KUBE_SECRET_TOKEN}" -o -z "${SCW_KUBE_PROJECT_ID}" -o -z "${SCW_KUBE_PROJECT_NAME}" ] && \
     echo "Impossible de créer une instance sans SCW_KUBE_PROJECT_NAME, SCW_KUBE_PROJECT_ID ou SCW_SECRET_TOKEN" && exit 1;
 
-if [ -z "${KUBE_CONFIG}" ];then
-    export KUBE_CONFIG=${HOME}/.kube/kubeconfig-${SCW_PROJECT_NAME}-${SCW_ZONE}.yaml
+if [ -z "${KUBECONFIG}" ];then
+    export KUBECONFIG=${HOME}/.kube/kubeconfig-${SCW_PROJECT_NAME}-${SCW_ZONE}.yaml
 fi;
 
 : ${SCW_CNI:="cilium"}
