@@ -70,6 +70,11 @@ echo -e "\r\033[2K✓   k8s cluster ${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE} ${SCW_K
 
 if (curl -s "${SCW_KUBE_API}/${SCW_KUBE_ID}/kubeconfig?dl=1" -H "X-Auth-Token: ${SCW_KUBE_SECRET_TOKEN}" > ${KUBECONFIG});then
     echo "✓   k8s kubeconfig ${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE} downloaded";
+else
+    echo "\e[31m❌  k8s kubeconfig ${SCW_KUBE_PROJECT_NAME}-${SCW_ZONE} downloaded";
+    echo command:
+    echo curl -vvv -s \"${SCW_KUBE_API}/${SCW_KUBE_ID}/kubeconfig?dl=1\" -H \"X-Auth-Token: ${SCW_KUBE_SECRET_TOKEN/-*/-...}\"
+    cat ${KUBECONFIG};
 fi
 
 # wait first ip (first node to be ready)
