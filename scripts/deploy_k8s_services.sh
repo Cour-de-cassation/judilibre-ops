@@ -252,6 +252,8 @@ if [ "${KUBE_ZONE}" == "local" ]; then
                 fi;
                 if [ "${KUBE_TYPE}" == "k3s" ]; then
                         if ! (which k3s > /dev/null 2>&1); then
+                                # hack since bug of 30/08/2022 - install process of k3s fails with stable v1.24.3+k3s2
+                                export INSTALL_K3S_VERSION=v1.23.10+k3s1
                                 (curl -sfL https://get.k3s.io | sh - 2>&1 |\
                                         awk 'BEGIN{s=0}{printf "\r☸️  Installing k3s (" s++ "/16)"}') && echo -e "\r\033[2K☸️   Installed k3s";
                         fi;
