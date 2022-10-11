@@ -19,6 +19,7 @@ else
             SEMVER=${TMP}
           fi
         fi
+	exit 1
     fi
 fi;
 if [ -z "${SEMVER}" ]; then
