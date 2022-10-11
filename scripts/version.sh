@@ -17,9 +17,9 @@ else
 	  TMP=$(cat setup.py | grep version | sed 's/.*version="\(.*\)\".*/\1/' | grep -v version) > /dev/null 2>&1;
           if [ ! -z "${TMP}" ];then
             SEMVER=${TMP}
+	    exit 1
           fi
         fi
-	exit 1
     fi
 fi;
 if [ -z "${SEMVER}" ]; then
