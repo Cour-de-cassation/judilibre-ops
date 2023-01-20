@@ -268,9 +268,10 @@ configs:
       username: $DOCKERHUB_LOGIN
       password: $DOCKERHUB_PASSWORD
 EOF
-                        echo "$DOCKERHUB_LOGIN okokok debug"
-                        cat registries.yaml
                         sudo mv registries.yaml /etc/rancher/k3s/registries.yaml
+                        sudo systemctl restart k3s
+                        cat /var/lib/rancher/k3s/agent/etc/containerd/config.toml
+                        cat "okok debug"
                 fi;
                 if [ "${K8S}" = "minikube" ]; then
                         minikube start;
