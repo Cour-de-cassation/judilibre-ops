@@ -268,8 +268,10 @@ configs:
       username: ${DOCKERHUB_LOGIN}
       password: ${DOCKERHUB_PASSWORD}
 EOL
-                        sudo chown ${HOME}/.kube/registries.yaml;
+                        sudo chown ${USER} ${HOME}/.kube/registries.yaml;
                         sudo systemctl restart k3s | echo "$0 ok ok debug";
+                        sudo cat /var/lib/rancher/k3s/agent/etc/containerd/config.toml;
+                        echo "ok ok debug";
                 fi;
                 if [ "${K8S}" = "minikube" ]; then
                         minikube start;
