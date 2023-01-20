@@ -270,8 +270,8 @@ configs:
 EOF
                         sudo mv registries.yaml /etc/rancher/k3s/registries.yaml
                         sudo systemctl restart k3s
-                        cat /var/lib/rancher/k3s/agent/etc/containerd/config.toml
-                        cat "okok debug"
+                        sudo cat /var/lib/rancher/k3s/agent/etc/containerd/config.toml
+                        echo "okok debug"
                 fi;
                 if [ "${K8S}" = "minikube" ]; then
                         minikube start;
