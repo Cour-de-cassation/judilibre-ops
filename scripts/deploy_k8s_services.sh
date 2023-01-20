@@ -261,22 +261,16 @@ if [ "${KUBE_ZONE}" == "local" ]; then
                         export KUBECONFIG=${HOME}/.kube/config-local-k3s.yaml;
                         sudo cp /etc/rancher/k3s/k3s.yaml ${KUBECONFIG};
                         sudo chown ${USER} ${KUBECONFIG};
-                        sudo bash -c 'cat << EOF > /etc/rancher/k3s/registries.yaml
-
-EOF'
-
-                        touch registries.yaml < $(cat <<-K3S_REGISTRIES_CONFIG
----
+                        cat << EOF > registries.yaml
 configs:
   registry-1.docker.io:
     auth:
-      username: ${DOCKERHUB_LOGIN}
-      password: ${DOCKERHUB_PASSWORD}
-K3S_REGISTRIES_CONFIG
-);
+      username: $DOCKERHUB_LOGIN
+      password: $DOCKERHUB_PASSWORD
+EOF
                         echo "$DOCKERHUB_LOGIN okokok debug"
-                        sudo mv registries.yaml /etc/rancher/k3S/registries.yaml
-                        sudo cat /etc/rancher/k3s/registries.yaml;
+                        cat registries.yaml
+                        sudo mv registries.yaml /etc/rancher/k3s/registries.yaml
                 fi;
                 if [ "${K8S}" = "minikube" ]; then
                         minikube start;
