@@ -261,14 +261,13 @@ if [ "${KUBE_ZONE}" == "local" ]; then
                         export KUBECONFIG=${HOME}/.kube/config-local-k3s.yaml;
                         sudo cp /etc/rancher/k3s/k3s.yaml ${KUBECONFIG};
                         sudo chown ${USER} ${KUBECONFIG};
-                        sudo touch /etc/rancher/k3s/registries.yaml
-                        sudo cat >/etc/rancher/k3s/registries.yaml <<EOL
+                        sudo bash -c 'cat << EOF > /etc/rancher/k3s/registries.yaml
 configs:
   registry-1.docker.io:
     auth:
       username: ${DOCKERHUB_LOGIN}
       password: ${DOCKERHUB_PASSWORD}
-EOL
+EOF'
                         sudo systemctl restart k3s | echo "$0 ok ok debug";
                         sudo cat /var/lib/rancher/k3s/agent/etc/containerd/config.toml;
                         echo "ok ok debug";
