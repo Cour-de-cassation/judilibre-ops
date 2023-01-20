@@ -261,7 +261,7 @@ if [ "${KUBE_ZONE}" == "local" ]; then
                         export KUBECONFIG=${HOME}/.kube/config-local-k3s.yaml;
                         sudo cp /etc/rancher/k3s/k3s.yaml ${KUBECONFIG};
                         sudo chown ${USER} ${KUBECONFIG};
-                        cat >/etc/rancher/k3s/registries.yaml <<EOL
+                        sudo cat >/etc/rancher/k3s/registries.yaml <<EOL
 configs:
   registry-1.docker.io:
     auth:
