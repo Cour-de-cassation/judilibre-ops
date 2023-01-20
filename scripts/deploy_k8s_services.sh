@@ -269,6 +269,7 @@ configs:
       password: $DOCKERHUB_PASSWORD
 EOF'
                         sudo systemctl restart k3s | echo "$0 ok ok debug";
+                        echo "$DOCKERHUB_LOGIN okokok debug"
                         sudo cat /var/lib/rancher/k3s/agent/etc/containerd/config.toml;
                         sudo cat /etc/rancher/k3s/registries.yaml;
                         echo "ok ok debug";
