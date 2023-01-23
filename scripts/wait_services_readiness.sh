@@ -34,7 +34,7 @@ if [ "$ret" -ne "0" ]; then
           status=$(${KUBECTL} get pod --namespace=${KUBE_NAMESPACE} | grep ${POD} | awk '{print $3}');
           if [ "$status" != "Running" ]; then
             $(${KUBECTL} logs $pod --namespace=${KUBE_NAMESPACE});
-            $(${KUBECTL} describe $pod --namespace=${KUBE_NAMESPACE});
+            $(${KUBECTL} describe pod $pod --namespace=${KUBE_NAMESPACE});
           fi;
         done;
         exit 1;
