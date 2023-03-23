@@ -9,4 +9,5 @@
     echo 51.15.223.35,174.89.249.181,91.170.21.111 #devops
     echo 80.87.224.0/22 #actimage
     echo 80.87.226.0/22 #new_actimage
+    echo 80.87.225.11 #actimage_supervision
 ) | tr '\n' ',' | sed 's/,$//'
