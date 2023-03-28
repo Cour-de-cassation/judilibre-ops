@@ -556,6 +556,16 @@ for resource in ${KUBE_SERVICES}; do
         fi;
         if ( ! (echo ${KUBE_SERVICES_FORCE_UPDATE} | tr ' ' '\n' | grep -q ${resource}) ) && (${KUBECTL} get ${RESOURCETYPE} --namespace=${NAMESPACE} 2>&1 | grep -v 'No resources' | grep -q ${RESOURCENAME}); then
                 echo "✓   ${resource} ${NAMESPACE}/${RESOURCENAME}";
+                ## For testing purposes, I want to trigger logging stack updating
+                if [ "${resource}" == "logging" ]; then
+                        if (envsubst "$(perl -e 'print "\$$_" for grep /^[_a-zA-Z]\w*$/, keys %ENV')" < ${RESOURCEFILE} | ${KUBECTL} apply -f - >> ${KUBE_INSTALL_LOG} 2>&1); then
+                                echo "🚀  ${resource} ${NAMESPACE}/${RESOURCENAME}";
+                        else
+                                echo "${ressource} ${NAMESPACE}/${RESOURCENAME} conf attemp was:" >> ${KUBE_INSTALL_LOG} 2>&1
+                                (envsubst "$(perl -e 'print "\$$_" for grep /^[_a-zA-Z]\w*$/, keys %ENV')" < ${RESOURCEFILE}) >> ${KUBE_INSTALL_LOG} 2>&1
+                                echo -e "\e[31m❌  ${resource} ${NAMESPACE}/${RESOURCENAME} !\e[0m" && exit 1;
+                        fi;
+                fi
         else
                 if [ "${resource}" == "ingress" -a "${APP_GROUP}" != "monitor" ]; then
                         export IP_WHITELIST=$(./scripts/whitelist.sh)
