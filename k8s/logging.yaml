@@ -167,7 +167,7 @@ data:
     [OUTPUT]
         Name                          loki
         Match                         *
-        Host                          logs.prd.obs.fr-par.scw.cloud/loki/api/v1/push
+        Host                          logs.prd.obs.fr-par.scw.cloud
         port                          443
         tls                           on
         tls.verify                    on
