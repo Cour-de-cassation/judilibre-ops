@@ -48,7 +48,7 @@ data:
     [SERVICE]
         Flush         5
         Grace         5
-        Log_Level     debug
+        Log_Level     info
         Daemon        off
         Parsers_File  parsers.conf
         HTTP_Server   On
