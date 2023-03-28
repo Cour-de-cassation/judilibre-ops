@@ -58,6 +58,7 @@ data:
     @INCLUDE input-kubernetes.conf
     @INCLUDE filter-kubernetes.conf
     @INCLUDE output-s3.conf
+    @INCLUDE output-cockpit.conf
 
   input-kubernetes.conf: |
     [INPUT]
@@ -161,6 +162,17 @@ data:
         workers                       1
         use_put_object                On
         s3_key_format                 /${SCW_KUBE_PROJECT_NAME}/${SCW_ZONE}/${KUBE_NAMESPACE}/%Y%m/%Y%m%d/%Y%m%d-%H%M_$UUID.jsonl
+
+  output-cockpit.conf: |
+    [OUTPUT]
+        Name                          loki
+        Match                         *
+        Host                          logs.prd.obs.fr-par.scw.cloud/loki/api/v1/push
+        port                          443
+        tls                           on
+        tls.verify                    on
+        http_user                     api_key
+        http_passwd                   ${SCW_COCKPIT_API_KEY}
 ---
 apiVersion: v1
 kind: Secret
