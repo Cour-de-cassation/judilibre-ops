@@ -48,7 +48,7 @@ data:
     [SERVICE]
         Flush         5
         Grace         5
-        Log_Level     info
+        Log_Level     debug
         Daemon        off
         Parsers_File  parsers.conf
         HTTP_Server   On
@@ -57,7 +57,6 @@ data:
 
     @INCLUDE input-kubernetes.conf
     @INCLUDE filter-kubernetes.conf
-    @INCLUDE output-s3.conf
     @INCLUDE output-cockpit.conf
 
   input-kubernetes.conf: |
