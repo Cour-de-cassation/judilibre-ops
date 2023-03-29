@@ -67,7 +67,7 @@ data:
         Parser            docker
         Docker_Mode       On
         DB                /var/log/flb_kube.db
-        Mem_Buf_Limit     10MB
+        Mem_Buf_Limit     30MB
         Skip_Long_Lines   On
         Refresh_Interval  10
 
@@ -109,9 +109,10 @@ data:
         Add_prefix   kubernetes_
 
     [FILTER]
-        Name          rewrite_tag
-        Match         kube.*
-        Rule          $kubernetes_pod_name ^.*$ log false
+        Name                    rewrite_tag
+        Match                   kube.*
+        Rule                    $kubernetes_pod_name ^.*$ log false
+        Emitter_Mem_Buf_Limit   30MB
 
   parsers.conf: |
     [PARSER]
