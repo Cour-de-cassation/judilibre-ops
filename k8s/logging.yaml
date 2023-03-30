@@ -108,11 +108,6 @@ data:
         Nested_under kubernetes
         Add_prefix   kubernetes_
 
-    [FILTER]
-        Name                    rewrite_tag
-        Match                   kube.*
-        Rule                    $kubernetes_pod_name ^.*$ log false
-        Emitter_Mem_Buf_Limit   30MB
 
   parsers.conf: |
     [PARSER]
