@@ -6,8 +6,10 @@
     curl -s https://updown.io/api/nodes/ipv4 | jq -r '.[]' | tr '\n' ',' #updown.io
     echo 185.24.185.46/27 #piste
     echo 185.24.186.254,185.24.186.214,185.24.187.214,185.24.184.214 #mj
-    echo 51.15.223.35,174.89.249.181,91.170.21.111,51.255.99.129,51.77.234.17 #devops
+    echo 51.15.223.35,174.89.249.181,91.170.21.111,51.255.99.129,51.77.234.17 #devops/piste
     echo 80.87.224.0/22 #actimage
     echo 80.87.226.0/22 #new_actimage
     echo 80.87.225.11 #actimage_supervision
 ) | tr '\n' ',' | sed 's/,$//'
+
+# If you want to update the whitelist, update this file and deploy it by deploying judilibre-search in scaleway (with github action).
