@@ -26,6 +26,8 @@ spec:
                 key: elastic-node
           - name: ELASTIC_INDEX
             value: ${ELASTIC_INDEX}
+          - name: TRANSACTION_INDEX
+            value: ${TRANSACTION_INDEX}
           - name: ELASTIC_CERT
             value: /etc/elasticsearch/certificates/ca.crt
           - name: HTTP_PASSWD
