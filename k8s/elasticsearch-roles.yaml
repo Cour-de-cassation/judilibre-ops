@@ -10,5 +10,5 @@ stringData:
       cluster:
       - monitor
       indices:
-      - names: [ '${APP_GROUP}_*' ]
+      - names: [ '${APP_GROUP}_*', '${TRANSACTION_INDEX}' ]
         privileges: [ 'read' ]
